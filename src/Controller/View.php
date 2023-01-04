@@ -54,7 +54,10 @@ class View {
         $response->data = $data;
         echo json_encode($response);
     }
-    function writeComment() {
-        echo "test";
+    function writeComment($url) {
+        extract($_GET);
+        move('test', ['ss' => $comment]);
+        // fetch("UPDATE `post` SET `comments`=? WHERE idx=?", [$comment, $url[1]]);
+        // back();
     }
 }

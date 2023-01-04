@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 require("../lib.php");
 require("../src/DB.php");

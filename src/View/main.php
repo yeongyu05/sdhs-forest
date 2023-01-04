@@ -9,11 +9,6 @@
                 <?=$item->title ?>
                 <?=$item->content ?>
                 <button type="button" class="likeBtn">좋아요</button>
-                <span class="likeCnt"><?=$item->likeCnt ?></span>
-                <?=$item->commentsCnt ?>
-                <?=$item->totalVisitors ?>
-                <?=$item->dailyVisitors ?>
-                <?=$item->weeklyVisitors ?>
             </div>
         <?php endforeach; ?>
         <script>
