@@ -3,7 +3,7 @@
         <div>
             <button type="button" onclick="location.href = '/createPost'">게시글 생성</button>
         </div>
-        <?php foreach($data as $item): ?>
+        <?php foreach($posts as $item): ?>
             <div onclick="location.href = '/detailPost/<?= $item->idx?>'">
                 <?=$item->writer ?>
                 <?=$item->title ?>

@@ -4,12 +4,8 @@ namespace src\Controller;
 
 class View {
     function main() {
-        $data = fetchAll("SELECT * FROM `post` ORDER BY idx DESC");
-        view('main', ['data' => $data]);
-    }
-    function test($data) {
-        $id = $data[1];
-        view('test', ['id' => $id]);
+        $posts = fetchAll("SELECT * FROM `post` AS p JOIN `user` AS u ON p.uidx = u.uidx ORDER BY pidx DESC");
+        view('main', ['posts' => $posts]);
     }
     function register() {
         view('auth/register');
@@ -27,7 +23,7 @@ class View {
     }
     function createPostCtrl() {
         extract($_POST);
-        fetch('INSERT INTO `post`(`writer`, `title`, `content`) VALUES (?,?,?)', [ss()->id, $title, $content]);
+        fetch('INSERT INTO `post`(`uidx`, `title`, `content`) VALUES (?,?,?)', [ss()->uidx, $title, $content]);
         move('/');
     }
     function detailPost($data) {

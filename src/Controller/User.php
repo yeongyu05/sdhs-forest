@@ -5,12 +5,11 @@ namespace src\Controller;
 class User {
     function register() {
         extract($_POST);
-        var_dump($image);
         $user = query("INSERT INTO `user` SET id=?, password=?, name=?", [$id, $password, $name]);
         if($user) {
-            // move("/login", "회원가입 성공");
+            move("/login", "회원가입 성공");
         }
-        // back('중복되는 id 입니다.');
+        back('중복되는 id 입니다.');
     }
     function login() {
         extract($_POST);
