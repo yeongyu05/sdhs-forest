@@ -10,7 +10,7 @@
     <header>
         <button type="button" onclick="location.href='/'">홈</button>
         <?php if(ss()):?>
-            <button type="button" onclick="location.href = '/profile/<?= ss()->name?>'">프로필</button>
+            <button type="button" onclick="location.href = '/profile/<?= ss()->uidx?>'">프로필</button>
             <button type="button" onclick="location.href = '/logout'">로그아웃</button>
         <?php else:?>
             <button type="button" onclick="location.href = '/register'">회원가입</button>
