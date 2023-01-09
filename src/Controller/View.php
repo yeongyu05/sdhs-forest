@@ -4,18 +4,7 @@ namespace src\Controller;
 
 class View {
     function main() {
-        $posts = fetchAll("
-            SELECT u.name, count(l.pidx) AS likeCnt, count(c.comment) AS commentCnt, p.title, p.content
-            FROM `post` AS p
-            JOIN `user` AS u
-            ON p.uidx = u.uidx
-            JOIN `like` AS l
-            ON p.pidx = l.pidx
-            JOIN `comments` AS c
-            ON p.pidx = c.pidx
-            GROUP BY p.pidx
-            ORDER BY p.pidx DESC
-        ");
+        $posts = fetchAll("SELECT * FROM `post`");
         view('main', ['posts' => $posts]);
     }
     function register() {
@@ -25,25 +14,10 @@ class View {
         view('auth/login');
     }
     function profile($url) {
-        // - 프로필 
-        //     - `프로필 이미지`
-        //     - `유저 아이디` : (#,@) ID
-        //     - `유저 이름`
-        // - 본인의 프로필 페이지 일 떄 **게시글 생성 버튼** 존재
-        // - TABS 
-        //     - TAB : 작성한 글 보기 
-        //     - TAB : 좋아요한 글 보기
-        // - 게시글은 메인페이지의 게시글과 설정 동일
         $uidx = $url[1];
         $user = fetch("SELECT `uidx`, `id`, `name` FROM `user` WHERE uidx = ?", [$uidx]);
         $written = fetch("SELECT * FROM `post` WHERE uidx = ?", [$uidx]);
-        $liked = fetch("
-            SELECT `u.uidx`, `p.title`, `p.content`
-            FROM `like` AS l
-            JOIN `post` AS p
-            ON l.pidx = p.pidx
-            WHERE l.uidx = 1
-        ");
+        $liked = fetch("SELECT * FROM `liked`");
         view('profile', ['user' => $user, 'written' => $written, 'liked' => $liked]);
     }
     function createPost() {
