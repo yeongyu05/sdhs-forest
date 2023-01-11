@@ -4,7 +4,16 @@ namespace src\Controller;
 
 class View {
     function main() {
-        $posts = fetchAll("SELECT * FROM `post`");
+        $posts = fetchAll("
+            SELECT pl.user_image, pl.name, pl.likedCnt, COUNT(c.pidx) commentsCnt, pl.title, pl.content, pl.post_image
+            FROM ( SELECT u.user_image, u.name, p.title, p.content, p.post_image, p.pidx, COUNT(l.pidx) likedCnt
+                FROM `post` p
+                    JOIN `user` u ON p.uidx = u.uidx
+                    JOIN `liked` l ON p.pidx = l.pidx
+                GROUP BY l.pidx
+            ) pl JOIN `comments` c ON pl.pidx = c.pidx
+            GROUP BY c.pidx
+        ");
         view('main', ['posts' => $posts]);
     }
     function register() {
