@@ -5,13 +5,13 @@ namespace src\Controller;
 class View {
     function main() {
         $posts = fetchAll("
-            SELECT pl.user_image, pl.name, pl.likedCnt, COUNT(c.pidx) commentsCnt, pl.title, pl.content, pl.post_image
+            SELECT pl.pidx, pl.user_image, pl.name, pl.likedCnt, COUNT(c.pidx) commentsCnt, pl.title, pl.content, pl.post_image
             FROM ( SELECT u.user_image, u.name, p.title, p.content, p.post_image, p.pidx, COUNT(l.pidx) likedCnt
                 FROM `post` p
-                    JOIN `user` u ON p.uidx = u.uidx
-                    JOIN `liked` l ON p.pidx = l.pidx
+                    LEFT JOIN `user` u ON p.uidx = u.uidx
+                    LEFT JOIN `liked` l ON p.pidx = l.pidx
                 GROUP BY l.pidx
-            ) pl JOIN `comments` c ON pl.pidx = c.pidx
+            ) pl LEFT JOIN `comments` c ON pl.pidx = c.pidx
             GROUP BY c.pidx
         ");
         view('main', ['posts' => $posts]);
@@ -25,8 +25,20 @@ class View {
     function profile($url) {
         $uidx = $url[1];
         $user = fetch("SELECT `uidx`, `id`, `name` FROM `user` WHERE uidx = ?", [$uidx]);
-        $written = fetch("SELECT * FROM `post` WHERE uidx = ?", [$uidx]);
-        $liked = fetch("SELECT * FROM `liked`");
+        $written = fetchAll("
+            SELECT pl.pidx, pl.user_image, pl.name, pl.likedCnt, COUNT(c.pidx) commentsCnt, pl.title, pl.content, pl.post_image
+            FROM ( SELECT u.user_image, u.name, p.title, p.content, p.post_image, COUNT(l.pidx) likedCnt, p.pidx, u.uidx
+                FROM `post` p
+                    LEFT JOIN `user` u ON p.uidx = u.uidx
+                    LEFT JOIN `liked` l ON p.pidx = l.pidx
+                GROUP BY l.pidx
+            ) pl LEFT JOIN `comments` c ON pl.pidx = c.pidx
+            WHERE pl.uidx = ?
+            GROUP BY c.pidx
+        ", [$uidx]);
+        $liked = fetchAll("
+            
+        ");
         view('profile', ['user' => $user, 'written' => $written, 'liked' => $liked]);
     }
     function createPost() {
