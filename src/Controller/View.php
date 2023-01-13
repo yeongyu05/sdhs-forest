@@ -8,75 +8,98 @@ class View {
             SELECT pl.pidx, pl.user_image, pl.name, pl.likedCnt, COUNT(c.pidx) commentsCnt, pl.title, pl.content, pl.post_image
             FROM ( SELECT u.user_image, u.name, p.title, p.content, p.post_image, p.pidx, COUNT(l.pidx) likedCnt
                 FROM `post` p
-                    LEFT JOIN `user` u ON p.uidx = u.uidx
-                    LEFT JOIN `liked` l ON p.pidx = l.pidx
-                GROUP BY l.pidx
-            ) pl LEFT JOIN `comments` c ON pl.pidx = c.pidx
-            GROUP BY c.pidx
+                    LEFT OUTER JOIN `user` u ON p.uidx = u.uidx
+                    LEFT OUTER JOIN `liked` l ON p.pidx = l.pidx
+                GROUP BY p.pidx
+            ) pl LEFT OUTER JOIN `comments` c ON pl.pidx = c.pidx
+            GROUP BY pl.pidx
+            ORDER BY pl.pidx
         ");
         view('main', ['posts' => $posts]);
     }
     function register() {
+        if(ss()) move('/');
         view('auth/register');
     }
     function login() {
+        if(ss()) move('/');
         view('auth/login');
     }
     function profile($url) {
         $uidx = $url[1];
-        $user = fetch("SELECT `uidx`, `id`, `name` FROM `user` WHERE uidx = ?", [$uidx]);
+        $user = fetch("SELECT `uidx`, `id`, `name`, `user_image` FROM `user` WHERE uidx = ?", [$uidx]);
         $written = fetchAll("
             SELECT pl.pidx, pl.user_image, pl.name, pl.likedCnt, COUNT(c.pidx) commentsCnt, pl.title, pl.content, pl.post_image
             FROM ( SELECT u.user_image, u.name, p.title, p.content, p.post_image, COUNT(l.pidx) likedCnt, p.pidx, u.uidx
                 FROM `post` p
-                    LEFT JOIN `user` u ON p.uidx = u.uidx
-                    LEFT JOIN `liked` l ON p.pidx = l.pidx
-                GROUP BY l.pidx
-            ) pl LEFT JOIN `comments` c ON pl.pidx = c.pidx
+                    LEFT OUTER JOIN `user` u ON p.uidx = u.uidx
+                    LEFT OUTER JOIN `liked` l ON p.pidx = l.pidx
+                GROUP BY p.pidx
+            ) pl LEFT OUTER JOIN `comments` c ON pl.pidx = c.pidx
             WHERE pl.uidx = ?
-            GROUP BY c.pidx
+            GROUP BY pl.pidx
+            ORDER BY pl.pidx
         ", [$uidx]);
         $liked = fetchAll("
-            
-        ");
+            SELECT all_posts.* FROM (
+                SELECT pl.pidx, pl.user_image, pl.name, pl.likedCnt, COUNT(c.pidx) commentsCnt, pl.title, pl.content, pl.post_image
+                FROM (
+                    SELECT u.user_image, u.name, p.title, p.content, p.post_image, COUNT(l.pidx) likedCnt, p.pidx
+                    FROM `post` p
+                    LEFT OUTER JOIN `user` u ON p.uidx = u.uidx
+                    LEFT OUTER JOIN `liked` l ON p.pidx = l.pidx
+                    GROUP BY p.pidx
+                ) pl LEFT OUTER JOIN `comments` c ON pl.pidx = c.pidx
+                GROUP BY pl.pidx
+            ) all_posts JOIN (
+                SELECT p.* FROM `post` p
+                LEFT OUTER JOIN `liked` l ON p.pidx = l.pidx
+                WHERE l.uidx = ?
+            ) liked_posts ON all_posts.pidx = liked_posts.pidx
+            ORDER BY all_posts.pidx
+        ", [$uidx]);
         view('profile', ['user' => $user, 'written' => $written, 'liked' => $liked]);
     }
     function createPost() {
+        if(!ss()) move('/login', '로그인을 원합니다');
         view('createPost');
     }
     function createPostCtrl() {
         extract($_POST);
-        fetch('INSERT INTO `post`(`uidx`, `title`, `content`) VALUES (?,?,?)', [ss()->uidx, $title, $content]);
+        fetch('INSERT INTO `post`(`uidx`, `title`, `content`, `post_image`) VALUES (?,?,?,?)', [ss()->uidx, $title, $content, '']);
         move('/');
     }
-    function detailPost($data) {
-        $post = fetch("SELECT * FROM post WHERE idx=?", [$data[1]]);
-        view('detailPost', ['idx' => $post->idx, 'writer' => $post->writer, 'title' => $post->title, 'content' => $post->content, 'comment' => $post->comments]);
+    function detailPost($url) {
+        $pidx = $url[1];
+        $post = fetch("SELECT * FROM post WHERE pidx = ?", [$pidx]);
+        $comments = fetchAll("SELECT * FROM `comments` WHERE pidx = ?", [$pidx]);
+        view('detailPost', ['post' => $post, 'comments' => $comments]);
     }
-    function editPost($data) {
-        view('editPost', ['idx' => $data[1]]);
+    function editPost($url) {
+        $pidx = $url[1];
+        $post = fetch("SELECT * FROM `post` WHERE pidx = ?", [$pidx]);
+        view('editPost', ['post' => $post]);
     }
-    function editPostCtrl($data) {
+    function editPostCtrl($url) {
+        $pidx = $url[1];
         extract($_POST);
-        fetch("UPDATE `post` SET `title`=?, `content`=? WHERE idx=?", [$title, $content, $data[1]]);
+        fetch("UPDATE `post` SET `title`= ?, `content`=  ? WHERE `pidx` = ?", [$title, $content, $pidx]);
         move('/', '완료되었다 수정.');
     }
-    function deletePost($data) {
-        fetch("DELETE FROM `post` WHERE idx=?", [$data[1]]);
+    function deletePost($url) {
+        $pidx = $url[1];
+        fetch("DELETE FROM `post` WHERE pidx=?", [$pidx]);
         move('/', '완료되었다 삭제.');
     }
-    function getData($url) {
-        header('HTTP/1.1 200 OK');
-        header('Content-Type: application/json; charset=UTF-8');
-        $response = (object) [];
-        $data = fetch("UPDATE `post` SET `likeCnt`=? WHERE idx=?", [$likeCnt+1, $url[1]]);
-        $response->data = $data;
-        echo json_encode($response);
-    }
     function writeComment($url) {
-        extract($_GET);
-        move('test', ['ss' => $comment]);
-        // fetch("UPDATE `post` SET `comments`=? WHERE idx=?", [$comment, $url[1]]);
-        // back();
+        $pidx = $url[1];
+        extract($_POST);
+        fetch("INSERT INTO `comments`(`pidx`, `uidx`, `comment`) VALUES (?,?,?)", [$pidx, ss()->uidx, $comment]);
+        back();
+    }
+    function liked($url) {
+        $pidx = $url[1];
+        // 좋아요 기능 만들기
+        back();
     }
 }

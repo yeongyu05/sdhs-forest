@@ -9,8 +9,7 @@ $get (
     '/detailPost/:idx@View@detailPost',
     '/editPost/:idx@View@editPost',
     '/deletePost/:idx@View@deletePost',
-    '/getData/:idx@View@getData',
-    '/writeComment/:idx@View@writeComment',
+    '/liked/:idx@View@liked',
 );
 
 $post (
@@ -18,4 +17,5 @@ $post (
     '/login@User@login',
     '/createPost@View@createPostCtrl',
     '/editPost/:idx@View@editPostCtrl',
+    '/writeComment/:idx@View@writeComment',
 );
