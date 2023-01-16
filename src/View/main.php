@@ -4,10 +4,12 @@
         <button type="button" onclick="location.href = '/createPost'">게시글 생성</button>
     </div>
     <?php foreach($posts as $post): ?>
-        <div onclick="location.href = '/detailPost/<?= $post->pidx?>'">
+        <div class="post" data-pidx="<?= $post->pidx?>">
             <span>프로필 사진<?= $post->user_image?></span>
             <span><?= $post->name?></span>
-            <button type="button" onclick="location.href='/liked/<?= $post->pidx?>'">좋아요</button>
+            <?php if(ss()):?>
+            <button type="button" class="likeBtn">좋아요</button>
+            <?php endif;?>
             <span>좋아요 <?= $post->likedCnt?>개</span>
             <span>댓글 <?= $post->commentsCnt?>개</span>
             <span><?= $post->title?></span>

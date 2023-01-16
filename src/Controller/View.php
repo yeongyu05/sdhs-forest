@@ -99,7 +99,15 @@ class View {
     }
     function liked($url) {
         $pidx = $url[1];
-        // 좋아요 기능 만들기
+        $uidx = ss()->uidx;
+        $isLiked = fetch("SELECT * FROM `liked` WHERE pidx = ? AND uidx = ?", [$pidx, $uidx]);
+        if($isLiked) {
+            fetch("DELETE FROM `liked` WHERE pidx = ? AND uidx = ?", [$pidx, $uidx]);
+            alert('취소되었다 좋아요.');
+            back();
+        }
+        fetch("INSERT INTO `liked`(`pidx`, `uidx`) VALUES (?,?)", [$pidx, $uidx]);
+        alert('좋아요를 원합니다.');
         back();
     }
 }
