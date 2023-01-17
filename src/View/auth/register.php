@@ -5,7 +5,7 @@
         <p><input type="password" name="password" placeholder="비밀번호" required></p>
         <p><input type="text" name="name" placeholder="이름" required></p>
         <p>프로필 사진</p>
-        <p><input type="file" name="image"></p>
+        <p><input type="file" name="fileToUpload"></p>
         <button type="submit">회원가입</button>
     </form>
 </main>

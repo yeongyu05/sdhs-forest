@@ -5,7 +5,7 @@
     </div>
     <?php foreach($posts as $post): ?>
         <div class="post" data-pidx="<?= $post->pidx?>">
-            <span>프로필 사진<?= $post->user_image?></span>
+            <span><?= $post->user_image?></span>
             <span><?= $post->name?></span>
             <?php if(ss()):?>
             <button type="button" class="likeBtn">좋아요</button>
