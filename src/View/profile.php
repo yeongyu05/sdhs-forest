@@ -1,6 +1,10 @@
 <main id="profile">
     <h1>프로필 페이지</h1>
-    <div>프로필 사진: <?=$user->user_image ?></div>
+    <div>
+        <?php if($user->user_image): ?>
+        <img src="/uploaded-images/<?=$user->user_image ?>">
+        <?php endif;?>
+    </div>
     <div>아이디: <?=$user->id ?></div>
     <div>이름: <?=$user->name ?></div>
     <?php if(ss() && ss()->uidx == $user->uidx):?>
@@ -9,7 +13,9 @@
     <h3>작성한 글</h3>
     <?php foreach($written as $post): ?>
         <div class="post" data-pidx="<?= $post->pidx?>">
-            <span>프로필 사진<?= $post->user_image?></span>
+            <?php if($user->user_image): ?>
+            <span><img src="/uploaded-images/<?= $post->user_image?>" alt="<?= $post->user_image?>"></span>
+            <?php endif;?>
             <span><?= $post->name?></span>
             <?php if(ss()):?>
             <button type="button" class="likeBtn">좋아요</button>
@@ -24,7 +30,9 @@
     <h3>좋아요한 글</h3>
     <?php foreach($liked as $post): ?>
         <div class="post" data-pidx="<?= $post->pidx?>">
-            <span>프로필 사진<?= $post->user_image?></span>
+            <?php if($user->user_image): ?>
+            <span><img src="/uploaded-images/<?= $post->user_image?>" alt="<?= $post->user_image?>"></span>
+            <?php endif;?>
             <span><?= $post->name?></span>
             <?php if(ss()):?>
             <button type="button" class="likeBtn">좋아요</button>

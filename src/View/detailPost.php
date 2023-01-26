@@ -1,7 +1,9 @@
 <main id="detailPost">
-    <?= $post->title?>
-    <?= $post->content?>
-    <?= $post->post_image?>
+    <div><?= $post->title?></div>
+    <div><?= $post->content?></div>
+    <?php if($post->post_image): ?>
+    <div><img src="/uploaded-images/<?= $post->post_image?>" alt="<?= $post->post_image?>"></div>
+    <?php endif;?>
     <?php if(ss() && $post->uidx == ss()->uidx):?>
         <div>
             <button type="button" class="editBtn" onclick="location.href = '/editPost/<?= $post->pidx?>'">수정</button>
