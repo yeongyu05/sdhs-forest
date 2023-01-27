@@ -8,7 +8,7 @@
         <div>
             <button type="button" class="editBtn" onclick="location.href = '/editPost/<?= $post->pidx?>'">수정</button>
             <button type="button" class="deleteBtn" onclick="location.href ='/deletePost/<?= $post->pidx?>'">삭제</button>
-            <button type="button" class="Btn">통계 페이지</button>
+            <button type="button" class="Btn" onclick="location.href ='/statistics/<?= $post->pidx?>'">통계 페이지</button>
         </div>
     <?php endif;?>
     <div>댓글</div>

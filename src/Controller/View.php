@@ -123,9 +123,13 @@ class View {
         }
     }
     function detailPost($url) {
+        if(!ss()) move('/login', '로그인을 원합니다.');
         $pidx = $url[1];
         $post = fetch("SELECT * FROM post WHERE pidx = ?", [$pidx]);
         $comments = fetchAll("SELECT * FROM `comments` WHERE pidx = ?", [$pidx]);
+        $date = date('Y-m-d');
+        $isVisited = fetch("SELECT * FROM `visitors` WHERE pidx = ? AND uidx = ?", [$pidx, ss()->uidx]);
+        !$isVisited && query("INSERT INTO `visitors`(`pidx`, `uidx`, `date`) VALUES (?,?,?)", [$pidx, ss()->uidx, $date]);
         view('detailPost', ['post' => $post, 'comments' => $comments]);
     }
     function editPost($url) {
@@ -156,11 +160,20 @@ class View {
         $isLiked = fetch("SELECT * FROM `liked` WHERE pidx = ? AND uidx = ?", [$pidx, $uidx]);
         if($isLiked) {
             fetch("DELETE FROM `liked` WHERE pidx = ? AND uidx = ?", [$pidx, $uidx]);
-            alert('취소되었다 좋아요.');
             back();
         }
         fetch("INSERT INTO `liked`(`pidx`, `uidx`) VALUES (?,?)", [$pidx, $uidx]);
-        alert('좋아요를 원합니다.');
         back();
+    }
+    function statistics($url) {
+        $pidx = $url[1];
+        $today = date('Y-m-d');
+        $week = date('w') + 1;
+        $lastWeek = date('Y-m-d', strtotime($date." -".$week."days"));
+        $thisWeek = date('Y-m-d', strtotime($date." +".$week."days"));
+        $total = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? GROUP BY pidx", [$pidx]);
+        $daily = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? AND date = ? GROUP BY pidx", [$pidx, $today]);
+        $weekly = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? AND date BETWEEN $lastWeek AND $thisWeek GROUP BY pidx", [$pidx, $today]);
+        view('statistics',['total' => $total, 'daily' => $daily]);
     }
 }
