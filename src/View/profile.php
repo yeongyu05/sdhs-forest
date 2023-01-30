@@ -44,4 +44,5 @@
             <span>게시글 사진<?= $post->post_image?></span>
         </div>
     <?php endforeach; ?>
+    <button onclick="location.href='/userStatistics'">유저 통계 리스트</button>
 </main>

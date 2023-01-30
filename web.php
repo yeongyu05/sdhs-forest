@@ -10,7 +10,8 @@ $get (
     '/editPost/:idx@View@editPost',
     '/deletePost/:idx@View@deletePost',
     '/liked/:idx@View@liked',
-    '/statistics/:idx@View@statistics',
+    '/postStatistics/:idx@View@postStatistics',
+    '/userStatistics@View@userStatistics'
 );
 
 $post (

@@ -2,6 +2,7 @@ const mainId = document.querySelector('main').id;
 mainId === 'main' ? main() :
 mainId === 'detailPost' ? detailPost() :
 mainId === 'profile' ? profile() :
+mainId === 'postStatistics' ? postStatistics() :
 mainId;
 
 function detailPost() {
@@ -32,4 +33,14 @@ function main() {
 
 function profile() {
     postClick();
+}
+
+function postStatistics() {
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const width = 500;
+    const height = 500;
+    canvas.width = width;
+    canvas.height = height;
+    ctx;
 }

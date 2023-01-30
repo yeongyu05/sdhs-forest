@@ -128,7 +128,7 @@ class View {
         $post = fetch("SELECT * FROM post WHERE pidx = ?", [$pidx]);
         $comments = fetchAll("SELECT * FROM `comments` WHERE pidx = ?", [$pidx]);
         $date = date('Y-m-d');
-        $isVisited = fetch("SELECT * FROM `visitors` WHERE pidx = ? AND uidx = ?", [$pidx, ss()->uidx]);
+        $isVisited = fetch("SELECT * FROM `visitors` WHERE pidx = ? AND uidx = ? AND date = ?", [$pidx, ss()->uidx, $date]);
         !$isVisited && query("INSERT INTO `visitors`(`pidx`, `uidx`, `date`) VALUES (?,?,?)", [$pidx, ss()->uidx, $date]);
         view('detailPost', ['post' => $post, 'comments' => $comments]);
     }
@@ -165,15 +165,36 @@ class View {
         fetch("INSERT INTO `liked`(`pidx`, `uidx`) VALUES (?,?)", [$pidx, $uidx]);
         back();
     }
-    function statistics($url) {
+    function postStatistics($url) {
         $pidx = $url[1];
         $today = date('Y-m-d');
-        $week = date('w') + 1;
-        $lastWeek = date('Y-m-d', strtotime($date." -".$week."days"));
-        $thisWeek = date('Y-m-d', strtotime($date." +".$week."days"));
+        $monday = date('w') - 1;
+        $sunday = 7 - date('w');
+        $firstDay = date('Y-m-d', strtotime($today." -".$monday."days"));
+        $lastDay = date('Y-m-d', strtotime($today." +".$sunday."days"));
         $total = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? GROUP BY pidx", [$pidx]);
         $daily = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? AND date = ? GROUP BY pidx", [$pidx, $today]);
-        $weekly = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? AND date BETWEEN $lastWeek AND $thisWeek GROUP BY pidx", [$pidx, $today]);
-        view('statistics',['total' => $total, 'daily' => $daily]);
+        $weekly = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? AND date BETWEEN ? AND ? GROUP BY pidx", [$pidx, $firstDay, $lastDay]);
+        $all = fetchAll("SELECT * FROM `visitors`");
+        view('postStatistics',['today' => $today, 'total' => $total, 'daily' => $daily, 'weekly' => $weekly, 'all' => $all]);
+    }
+    function userStatistics() {
+        $list = fetchAll("
+            SELECT u.uidx, u.id, u.name, u.user_image, IFNULL(totalPost, 0) post, IFNULL(totalPostLiked, 0) liked, IFNULL(totalPostComments, 0) comments
+            FROM (SELECT uidx, id, name, user_image FROM `user`) u
+            LEFT JOIN (
+                SELECT uidx, count(uidx) totalPost
+                FROM `post` GROUP BY uidx
+            ) p ON u.uidx = p.uidx
+            LEFT JOIN (
+                SELECT post.uidx, COUNT(post.uidx) totalPostLiked FROM `post`
+                JOIN liked on post.pidx = liked.pidx GROUP BY post.uidx
+            ) l ON u.uidx = l.uidx
+            LEFT JOIN (
+                SELECT post.uidx, COUNT(post.uidx) totalPostComments FROM `post`
+                JOIN comments ON post.pidx = comments.pidx GROUP BY post.uidx
+            ) c ON u.uidx = c.uidx
+        ");
+        view('userStatistics', ['list' => $list]);
     }
 }
