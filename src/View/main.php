@@ -1,24 +1,31 @@
 <main id="main">
-    <h1>메인 페이지</h1>
-    <div>
-        <button type="button" onclick="location.href = '/createPost'">게시글 생성</button>
-    </div>
-    <?php foreach($posts as $post): ?>
-        <div class="post" data-pidx="<?= $post->pidx?>">
-            <?php if($post->user_image): ?>
-            <span><img src="/uploaded-images/<?= $post->user_image?>" alt="userImg"></span>
-            <?php endif;?>
-            <span><?= $post->name?></span>
-            <?php if(ss()):?>
-            <button type="button" class="likeBtn">좋아요</button>
-            <?php endif;?>
-            <span>좋아요 <?= $post->likedCnt?>개</span>
-            <span>댓글 <?= $post->commentsCnt?>개</span>
-            <span><?= $post->title?></span>
-            <span><?= $post->content?></span>
-            <?php if($post->post_image): ?>
-            <span><img src="/uploaded-images/<?= $post->post_image?>" alt="postImg"></span>
-            <?php endif;?>
+    <div class="inner">
+        <h1>메인 페이지</h1>
+        <div class="container grid">
+            <?php foreach($posts as $post): ?>
+                <div class="post" data-pidx="<?= $post->pidx?>">
+                    <?php if($post->post_image): ?>
+                    <div><img src="/uploaded-images/<?= $post->post_image?>" alt="postImg"></div>
+                    <?php else:?>
+                    <div></div>
+                    <?php endif;?>
+                    <div class="flex">
+                        <?php if($post->user_image): ?>
+                        <div><img src="/uploaded-images/<?= $post->user_image?>" alt="userImg"></div>
+                        <?php endif;?>
+                        <div><?= $post->name?></div>
+                        <div><?= $post->title?></div>
+                        <div><?= $post->content?></div>
+                    </div>
+                    <div class="flex">
+                        <div>댓글 <?= $post->commentsCnt?>개</div>
+                        <div>좋아요 <?= $post->likedCnt?>개</div>
+                        <?php if(ss()):?>
+                        <div><button type="button" class="likeBtn">좋아요</button></div>
+                        <?php endif;?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
-    <?php endforeach; ?>
+    </div>
 </main>

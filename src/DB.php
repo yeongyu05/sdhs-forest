@@ -29,3 +29,7 @@ function fetchAll($sql, $data = []) {
     $q = query($sql, $data);
     return $q ? $q->fetchAll() : $q;
 }
+
+function lastId(){
+    return DB::get()->lastInsertId();
+}

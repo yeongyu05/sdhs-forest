@@ -151,8 +151,14 @@ class View {
     function writeComment($url) {
         $pidx = $url[1];
         extract($_POST);
-        fetch("INSERT INTO `comments`(`pidx`, `uidx`, `comment`) VALUES (?,?,?)", [$pidx, ss()->uidx, $comment]);
-        back();
+        if($commentInput) {
+            fetch("INSERT INTO `comments`(`pidx`, `uidx`, `comment`, `depth`, `groupNum`) VALUES (?,?,?,?,?)", [$pidx, ss()->uidx, $commentInput, 0, ]);
+            // back();
+        }
+        if($nestedCommentInput) {
+            fetch("INSERT INTO `comments`(`pidx`, `uidx`, `comment`, `pid`) VALUES (?,?,?,?)", [$pidx, ss()->uidx, $nestedCommentInput, $cidx]);
+            back();
+        }
     }
     function liked($url) {
         $pidx = $url[1];

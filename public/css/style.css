@@ -7,7 +7,90 @@
 }
 
 img {
-    width: 200px;
+    vertical-align: middle;
+}
+
+.inner {
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+.flex {
+    display: flex;
+}
+
+.grid {
+    display: grid;
+}
+
+header {
+    height: 100px;
+}
+
+header > .inner {
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+}
+
+header > .inner > nav > button {
+    width: 4rem;
+    height: 1.5rem;
+}
+
+#main > .inner > h1 {
+    text-align: center;
+}
+
+#main > .inner > .container {
+    grid-template-columns: repeat(4, 352px);
+    gap: 10px;
+    margin-top: 50px;
+}
+
+#main > .inner > .container > .post {
+    text-align: center;
+    cursor: pointer;
+    background: #efefef;
+}
+
+#main > .inner > .container > .post > div:nth-child(1) {
     height: 200px;
-    object-fit: contain;
+}
+
+#main > .inner > .container > .post > div:nth-child(1) > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#main > .inner > .container > .post > div:nth-child(2) {
+    justify-content: space-around;
+    align-items: center;
+    height: 50px;
+}
+
+#main > .inner > .container > .post > div:nth-child(2) > div:last-child {
+    width: 50px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#main > .inner > .container > .post > div:nth-child(2) > div > img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+#main > .inner > .container > .post > div:nth-child(3) {
+    justify-content: space-around;
+    align-items: center;
+    height: 50px;
+}
+
+footer {
+    height: 100px;
+    justify-content: center;
+    align-items: center;
 }

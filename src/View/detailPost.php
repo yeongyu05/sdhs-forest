@@ -13,11 +13,12 @@
     <?php endif;?>
     <div>댓글</div>
     <form action="/writeComment/<?= $post->pidx?>" method="post">
-        <input type="text" name="comment" required>
-        <button type="submit">작성</button>
+        <input type="text" name="commentInput">
         <div class="comments">
             <?php foreach($comments as $item):?>
-                <div><?= $item->comment?></div>
+                <div class="comment" data-cidx="<?=$item->cidx ?>">
+                    <div><?=$item->comment ?></div>
+                </div>
             <?php endforeach;?>
         </div>
     </form>
