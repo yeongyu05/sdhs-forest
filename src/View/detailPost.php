@@ -17,7 +17,11 @@
         <div class="comments">
             <?php foreach($comments as $item):?>
                 <div class="comment" data-cidx="<?=$item->cidx ?>">
-                    <div><?=$item->comment ?></div>
+                    <?php if($item->depth == 0):?>
+                        <div>댓글: <?=$item->comment ?></div>
+                    <?php elseif($item->depth == 1):?>
+                        <div class="nestedC">대댓글: <?=$item->comment ?></div>
+                    <?php endif;?>
                 </div>
             <?php endforeach;?>
         </div>

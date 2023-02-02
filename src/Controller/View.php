@@ -126,7 +126,7 @@ class View {
         if(!ss()) move('/login', '로그인을 원합니다.');
         $pidx = $url[1];
         $post = fetch("SELECT * FROM post WHERE pidx = ?", [$pidx]);
-        $comments = fetchAll("SELECT * FROM `comments` WHERE pidx = ?", [$pidx]);
+        $comments = fetchAll("SELECT * FROM `comments` WHERE pidx = ? ORDER BY groupNum, depth", [$pidx]);
         $date = date('Y-m-d');
         $isVisited = fetch("SELECT * FROM `visitors` WHERE pidx = ? AND uidx = ? AND date = ?", [$pidx, ss()->uidx, $date]);
         !$isVisited && query("INSERT INTO `visitors`(`pidx`, `uidx`, `date`) VALUES (?,?,?)", [$pidx, ss()->uidx, $date]);
@@ -152,11 +152,11 @@ class View {
         $pidx = $url[1];
         extract($_POST);
         if($commentInput) {
-            fetch("INSERT INTO `comments`(`pidx`, `uidx`, `comment`, `depth`, `groupNum`) VALUES (?,?,?,?,?)", [$pidx, ss()->uidx, $commentInput, 0, ]);
-            // back();
-        }
-        if($nestedCommentInput) {
-            fetch("INSERT INTO `comments`(`pidx`, `uidx`, `comment`, `pid`) VALUES (?,?,?,?)", [$pidx, ss()->uidx, $nestedCommentInput, $cidx]);
+            fetch("INSERT INTO `comments`(`pidx`, `uidx`, `comment`, `depth`, `groupNum`) VALUES (?,?,?,?,?)", [$pidx, ss()->uidx, $commentInput, 0, 0]);
+            query("UPDATE `comments` SET `groupNum`=? WHERE cidx=?", [lastInsertId(), lastInsertId()]);
+            back();
+        } else if($nestedCommentInput) {
+            fetch("INSERT INTO `comments`(`pidx`, `uidx`, `comment`, `depth`, `groupNum`) VALUES (?,?,?,?,?)", [$pidx, ss()->uidx, $nestedCommentInput, 1, $cidx]);
             back();
         }
     }

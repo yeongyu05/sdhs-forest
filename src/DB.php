@@ -15,7 +15,7 @@ function query($sql, $data = []) {
         $q->execute($data);
         return $q;
     } catch(Exception $e) {
-        // echo "$e->getMessage() <br />";
+        echo "$e->getMessage() <br />";
         return false;
     }
 }
@@ -30,6 +30,6 @@ function fetchAll($sql, $data = []) {
     return $q ? $q->fetchAll() : $q;
 }
 
-function lastId(){
+function lastInsertId(){
     return DB::get()->lastInsertId();
 }

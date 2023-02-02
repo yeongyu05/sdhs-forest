@@ -20,8 +20,9 @@ function detailPost() {
         e.key === 'Enter' && e.currentTarget.value.trim() ?
         form.submit() : false;
     }
-    const handelCommentClick = ({currentTarget}) => {
-        const form = currentTarget.parentNode.parentNode;
+    const handelCommentClick = e => {
+        if(e.target.classList.contains('nestedC')) return;
+        const form = e.currentTarget.parentNode.parentNode;
         if(form.nestedCommentInput) return;
         const input = document.createElement('input');
         const hiddenInput = document.createElement('input');
@@ -29,9 +30,9 @@ function detailPost() {
         input.name = 'nestedCommentInput';
         hiddenInput.type = 'hidden';
         hiddenInput.name = 'cidx';
-        hiddenInput.value = currentTarget.dataset.cidx;
-        currentTarget.appendChild(input);
-        currentTarget.appendChild(hiddenInput);
+        hiddenInput.value = e.currentTarget.dataset.cidx;
+        e.currentTarget.appendChild(input);
+        e.currentTarget.appendChild(hiddenInput);
         input.focus();
         input.addEventListener('blur', handleInputBlur);
         input.addEventListener('keydown', handleInputKeydown);
@@ -70,8 +71,85 @@ function profile() {
 function postStatistics() {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    const width = 500;
-    const height = 500;
+    const width = 800;
+    const height = 450;
     canvas.width = width;
     canvas.height = height;
+      
+    // const weeks = {};
+    // all.forEach(v => {
+    //   const date = new Date(v.date);
+    //   const startOfWeek = new Date(date);
+    //   startOfWeek.setDate(date.getDate() - date.getDay());
+    //   const week = startOfWeek.toISOString().split("T")[0];
+    //   if (!weeks[week]) {
+    //     weeks[week] = [];
+    //   }
+    //   weeks[week].push(v);
+    // });
+
+    const weeks = [];
+    all.forEach(v => {
+      const date = new Date(v.date);
+      const startOfWeek = new Date(date);
+      startOfWeek.setDate(date.getDate() - date.getDay());
+      const week = startOfWeek.toISOString().split("T")[0];
+    //   weeks.some(e => e.date === week);
+    //   weeks = [
+    //     ...weeks,
+
+    //   ]
+
+      if (!weeks[week]) {
+        weeks[week] = [];
+      }
+      weeks[week].push(v);
+    });
+
+    console.log(weeks);
+
+    function render() {
+        const weekData = [
+            {
+                '2023-01-22': [
+                    {date: '2023-01-27'},
+                    {date: '2023-01-28'},
+                ],
+                '2023-01-29': [
+                    {date: '2023-01-30'},
+                    {date: '2023-01-31'},
+                ],
+            }
+        ]
+        const data =  [
+            {
+                date: '2023-01-22',
+                count: 5,
+            },
+            {
+                date: '2023-01-29',
+                count: 18,
+            },
+        ]
+        
+        const dummy = [
+            {
+                title: 'asdf',
+                newValue: 123,
+                oldValue: 456,
+            },
+            {
+                title: 'asdf',
+                newValue: 123,
+                oldValue: 456,
+            },
+            {
+                title: 'asdf',
+                newValue: 123,
+                oldValue: 456,
+            },
+        ]
+    }
+
+    // render();
 }

@@ -7,8 +7,5 @@
         const today = "<?=$today ?>";
         const weekly = <?=$weekly->cnt ?>;
         const all = <?=json_encode($all) ?>;
-        console.log(today);
-        console.log(weekly);
-        console.log(all);
     </script>
 </main>
