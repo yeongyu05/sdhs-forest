@@ -11,10 +11,6 @@ img {
     width: 50px;
 }
 
-canvas {
-    border: 1px solid #333;
-}
-
 .inner {
     max-width: 1440px;
     margin: 0 auto;

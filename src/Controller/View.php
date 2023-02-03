@@ -127,7 +127,8 @@ class View {
         $pidx = $url[1];
         $post = fetch("SELECT * FROM post WHERE pidx = ?", [$pidx]);
         $comments = fetchAll("SELECT * FROM `comments` WHERE pidx = ? ORDER BY groupNum, depth", [$pidx]);
-        $date = date('Y-m-d');
+        // $timestamp = strtotime("2023-02-3");
+        $date = date('Y-m-d', $timestamp);
         $isVisited = fetch("SELECT * FROM `visitors` WHERE pidx = ? AND uidx = ? AND date = ?", [$pidx, ss()->uidx, $date]);
         !$isVisited && query("INSERT INTO `visitors`(`pidx`, `uidx`, `date`) VALUES (?,?,?)", [$pidx, ss()->uidx, $date]);
         view('detailPost', ['post' => $post, 'comments' => $comments]);
@@ -174,15 +175,10 @@ class View {
     function postStatistics($url) {
         $pidx = $url[1];
         $today = date('Y-m-d');
-        $monday = date('w') - 1;
-        $sunday = 7 - date('w');
-        $firstDay = date('Y-m-d', strtotime($today." -".$monday."days"));
-        $lastDay = date('Y-m-d', strtotime($today." +".$sunday."days"));
         $total = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? GROUP BY pidx", [$pidx]);
         $daily = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? AND date = ? GROUP BY pidx", [$pidx, $today]);
-        $weekly = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? AND date BETWEEN ? AND ? GROUP BY pidx", [$pidx, $firstDay, $lastDay]);
-        $all = fetchAll("SELECT * FROM `visitors`");
-        view('postStatistics',['today' => $today, 'total' => $total, 'daily' => $daily, 'weekly' => $weekly, 'all' => $all]);
+        $visitors = fetchAll("SELECT * FROM `visitors`");
+        view('postStatistics',['total' => $total, 'daily' => $daily, 'visitors' => $visitors]);
     }
     function userStatistics() {
         $list = fetchAll("

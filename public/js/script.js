@@ -71,85 +71,79 @@ function profile() {
 function postStatistics() {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    const width = 800;
+    const canvasWidth = 800;
     const height = 450;
-    canvas.width = width;
+    canvas.width = canvasWidth;
     canvas.height = height;
-      
-    // const weeks = {};
-    // all.forEach(v => {
-    //   const date = new Date(v.date);
-    //   const startOfWeek = new Date(date);
-    //   startOfWeek.setDate(date.getDate() - date.getDay());
-    //   const week = startOfWeek.toISOString().split("T")[0];
-    //   if (!weeks[week]) {
-    //     weeks[week] = [];
-    //   }
-    //   weeks[week].push(v);
-    // });
 
-    const weeks = [];
-    all.forEach(v => {
-      const date = new Date(v.date);
-      const startOfWeek = new Date(date);
-      startOfWeek.setDate(date.getDate() - date.getDay());
-      const week = startOfWeek.toISOString().split("T")[0];
-    //   weeks.some(e => e.date === week);
-    //   weeks = [
-    //     ...weeks,
-
-    //   ]
-
-      if (!weeks[week]) {
-        weeks[week] = [];
-      }
-      weeks[week].push(v);
-    });
-
-    console.log(weeks);
-
-    function render() {
-        const weekData = [
-            {
-                '2023-01-22': [
-                    {date: '2023-01-27'},
-                    {date: '2023-01-28'},
-                ],
-                '2023-01-29': [
-                    {date: '2023-01-30'},
-                    {date: '2023-01-31'},
-                ],
-            }
-        ]
-        const data =  [
-            {
-                date: '2023-01-22',
-                count: 5,
-            },
-            {
-                date: '2023-01-29',
-                count: 18,
-            },
-        ]
-        
-        const dummy = [
-            {
-                title: 'asdf',
-                newValue: 123,
-                oldValue: 456,
-            },
-            {
-                title: 'asdf',
-                newValue: 123,
-                oldValue: 456,
-            },
-            {
-                title: 'asdf',
-                newValue: 123,
-                oldValue: 456,
-            },
-        ]
+    const setData = () => {
+        let weekly = [];
+        let week = new Date();
+        for(let i = 0; i < 5; i++) {
+            week = i === 0 ?
+            new Date(week.getFullYear(), week.getMonth(), week.getDate() - week.getDay(), week.getHours() + 9) :
+            new Date(week.getFullYear(), week.getMonth(), week.getDate() - 7, week.getHours() + 9);
+            const date = week.toISOString().split("T")[0];
+            weekly = [{date, count: 0}, ...weekly];
+        }
+        visitors.forEach(v => {
+            const date = new Date(v.date);
+            const startOfWeek = new Date(date);
+            console.log(date);
+            startOfWeek.setDate(date.getDate() - date.getDay());
+            const week = startOfWeek.toISOString().split("T")[0];
+            weekly.forEach(e => e.date === week ? e.count += 1 : false);
+        })
+        return weekly;
     }
 
-    // render();
+    const render = () => {
+        console.log(setData());
+        const data = setData();
+        const length = data.length;
+        const [pl, pr, pt, pb] = [50, 0, 25, 50];
+        const max = Math.max(...data.map(e => e.count)) !== 0 ?
+        Math.max(...data.map(e => e.count)) : 10;
+        const limit = Math.ceil(max / 10);
+        const maxHeight = (height - pt - pb);
+        const maxValue = Math.ceil(max / limit) * limit;
+        const rowCount = Math.round(maxValue / limit);
+        const rowLimit = maxHeight / rowCount;
+        const p = maxHeight / maxValue;
+        const insideWidth = (canvasWidth - pl - pr);
+        const interval = insideWidth / (length * 2 + 1);
+        const maxWidth = insideWidth - interval * 2;
+        const gap = (maxWidth - interval * length) / (length !== 1 ? length - 1 : length);
+        
+        for (let i = 0; i <= rowCount; i++) {
+            const y = height - (i * rowLimit) - pb;
+            ctx.beginPath();
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#eee';
+            ctx.fillRect(pl, y, canvasWidth - pr, 1);
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#777';
+            ctx.fillText(limit * i, pl - 5, y + 5);
+        }
+
+        data.forEach(({date, count}, idx) => {
+            const x = pl + interval + (interval * idx) + (gap * idx);
+            const y = pt + maxHeight - p * count;
+            const height = p * count;
+
+            ctx.beginPath();
+            ctx.fillStyle = '#888';
+            ctx.fillRect(x, y, interval, height);
+            
+            ctx.fillStyle = 'red';
+            ctx.font = '1rem serif bold';
+            ctx.fillText(count, x + interval / 2, y - 5);
+
+            ctx.fillStyle = 'blue';
+            ctx.fillText(date, x + interval / 2, pt + maxHeight + pb / 3);
+        });
+    }
+
+    render();
 }
