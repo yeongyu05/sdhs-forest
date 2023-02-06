@@ -65,6 +65,14 @@ function main() {
 }
 
 function profile() {
+    const tabs = [...document.querySelectorAll('.tabs > div')];
+    const article = [...document.querySelectorAll('article')];
+    const handleTabsClick = ({currentTarget}) => {
+        if(currentTarget.classList.contains('selected')) return;
+        tabs.forEach(e => e.classList.toggle('selected'));
+        article.forEach(e => e.classList.toggle('none'));
+    }
+    tabs.forEach(tab => tab.addEventListener('click', handleTabsClick));
     postClick();
 }
 
@@ -81,24 +89,23 @@ function postStatistics() {
         let week = new Date();
         for(let i = 0; i < 5; i++) {
             week = i === 0 ?
-            new Date(week.getFullYear(), week.getMonth(), week.getDate() - week.getDay(), week.getHours() + 9) :
-            new Date(week.getFullYear(), week.getMonth(), week.getDate() - 7, week.getHours() + 9);
+            new Date(week.getFullYear(), week.getMonth(), week.getDate() - week.getDay()) :
+            new Date(week.getFullYear(), week.getMonth(), week.getDate() - 7);
+            week.setHours(week.getHours() + 9);
             const date = week.toISOString().split("T")[0];
             weekly = [{date, count: 0}, ...weekly];
         }
         visitors.forEach(v => {
             const date = new Date(v.date);
-            const startOfWeek = new Date(date);
-            console.log(date);
-            startOfWeek.setDate(date.getDate() - date.getDay());
-            const week = startOfWeek.toISOString().split("T")[0];
+            const endOfWeek = new Date(date);
+            endOfWeek.setDate(date.getDate() - date.getDay() + 7);
+            const week = endOfWeek.toISOString().split("T")[0];
             weekly.forEach(e => e.date === week ? e.count += 1 : false);
         })
         return weekly;
     }
 
     const render = () => {
-        console.log(setData());
         const data = setData();
         const length = data.length;
         const [pl, pr, pt, pb] = [50, 0, 25, 50];

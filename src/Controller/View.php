@@ -127,8 +127,7 @@ class View {
         $pidx = $url[1];
         $post = fetch("SELECT * FROM post WHERE pidx = ?", [$pidx]);
         $comments = fetchAll("SELECT * FROM `comments` WHERE pidx = ? ORDER BY groupNum, depth", [$pidx]);
-        // $timestamp = strtotime("2023-02-3");
-        $date = date('Y-m-d', $timestamp);
+        $date = date('Y-m-d');
         $isVisited = fetch("SELECT * FROM `visitors` WHERE pidx = ? AND uidx = ? AND date = ?", [$pidx, ss()->uidx, $date]);
         !$isVisited && query("INSERT INTO `visitors`(`pidx`, `uidx`, `date`) VALUES (?,?,?)", [$pidx, ss()->uidx, $date]);
         view('detailPost', ['post' => $post, 'comments' => $comments]);
@@ -177,7 +176,7 @@ class View {
         $today = date('Y-m-d');
         $total = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? GROUP BY pidx", [$pidx]);
         $daily = fetch("SELECT *, count(pidx) cnt FROM `visitors` WHERE pidx = ? AND date = ? GROUP BY pidx", [$pidx, $today]);
-        $visitors = fetchAll("SELECT * FROM `visitors`");
+        $visitors = fetchAll("SELECT * FROM `visitors` WHERE pidx = ?", [$pidx]);
         view('postStatistics',['total' => $total, 'daily' => $daily, 'visitors' => $visitors]);
     }
     function userStatistics() {
