@@ -1,5 +1,5 @@
     <footer class="flex">
-        <div class="inner">&copy; 2023. KIMYEONGYU All rights reserved.</div>
+        <div class="inner">&copy; 2023. YEONGYU All rights reserved.</div>
     </footer>
 </div>
 <script src="/js/script.js"></script>

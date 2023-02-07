@@ -64,6 +64,9 @@ header > .inner > nav > button {
 #main > .inner > .container > div > div {
     width: calc(100% / 8);
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #main > .inner > .container > div > div > img {
@@ -122,13 +125,11 @@ header > .inner > nav > button {
 
 #profile > .inner > .profileWrap > .userImage {
     width: 300px;
-    height: 300px;
     border: 1px solid #333;
 }
 
 #profile > .inner > .profileWrap > .userImage > img {
     width: 100%;
-    height: 100%;
     object-fit: cover;
 }
 
@@ -178,6 +179,9 @@ header > .inner > nav > button {
 #profile > .inner > section > article > .post > div {
     width: calc(100% / 8);
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #profile > .inner > section > article > .post > div > img {
@@ -188,11 +192,107 @@ header > .inner > nav > button {
 
 #createPost > .inner > h1 {
     text-align: center;
+    margin-bottom: 20px;
 }
 
-/* #createPost > .inner > form {
+#createPost > .inner > form {
+    flex-direction: column;
+    gap: 20px;
     width: 300px;
-} */
+    margin: 0 auto;
+}
+
+#createPost > .inner > form > div > input {
+    width: 300px;
+}
+
+#createPost > .inner > form > div > textarea {
+    width: 300px;
+    height: 120px;
+}
+
+#detailPost > .inner > div {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#detailPost > .inner > .title {
+    font-size: 1.5rem;
+}
+
+#detailPost > .inner > .image > img {
+    width: 300px;
+    object-fit: cover;
+}
+
+#detailPost > .inner > .buttons > button {
+    width: 5rem;
+    height: 1.5rem;
+}
+
+#detailPost > .inner > .cmt {
+    font-size: 1.5rem;
+}
+
+#detailPost > .inner > form {
+    text-align: center;
+}
+
+#detailPost > .inner > form > input {
+    width: 300px;
+}
+
+#detailPost > .inner > form > .comments > .comment {
+    width: 300px;
+    margin: 0 auto;
+    text-align: start;
+}
+
+#detailPost > .inner > form > .comments > .comment > div:not(.nestedC) {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+#detailPost > .inner > form > .comments > .comment > .nestedC {
+    margin-left: 20px;
+}
+
+#postStatistics > .inner > div {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#userStatistics > .inner > h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#userStatistics > .inner > .container > .columnName {
+    align-items: center;
+    height: 100px;
+    background: #ffA500;
+}
+
+#userStatistics > .inner > .container > .columnName > div {
+    width: calc(100% / 6);
+    text-align: center;
+}
+
+#userStatistics > .inner > .container > .item {
+    align-items: center;
+    height: 100px;
+}
+
+#userStatistics > .inner > .container > .item > div {
+    width: calc(100% / 6);
+    text-align: center;
+}
+
+#userStatistics > .inner > .container > .item > div > img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+}
 
 footer {
     height: 100px;

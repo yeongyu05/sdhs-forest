@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- 생성 시간: 23-01-09 12:41
+-- 생성 시간: 23-02-07 05:22
 -- 서버 버전: 10.4.22-MariaDB
 -- PHP 버전: 8.1.2
 
@@ -31,7 +31,9 @@ CREATE TABLE `comments` (
   `cidx` int(11) NOT NULL,
   `pidx` int(11) NOT NULL,
   `uidx` int(11) NOT NULL,
-  `comment` text NOT NULL
+  `comment` text NOT NULL,
+  `depth` int(11) NOT NULL,
+  `groupNum` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -74,6 +76,13 @@ CREATE TABLE `user` (
   `user_image` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- 테이블의 덤프 데이터 `user`
+--
+
+INSERT INTO `user` (`uidx`, `id`, `password`, `name`, `user_image`) VALUES
+(1, 'admin', '1234', 'admin', 'img0.jpg');
+
 -- --------------------------------------------------------
 
 --
@@ -83,6 +92,7 @@ CREATE TABLE `user` (
 CREATE TABLE `visitors` (
   `vidx` int(11) NOT NULL,
   `pidx` int(11) NOT NULL,
+  `uidx` int(11) NOT NULL,
   `date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -112,7 +122,8 @@ ALTER TABLE `post`
 -- 테이블의 인덱스 `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`uidx`);
+  ADD PRIMARY KEY (`uidx`),
+  ADD UNIQUE KEY `id` (`id`) USING HASH;
 
 --
 -- 테이블의 인덱스 `visitors`
@@ -146,7 +157,7 @@ ALTER TABLE `post`
 -- 테이블의 AUTO_INCREMENT `user`
 --
 ALTER TABLE `user`
-  MODIFY `uidx` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `uidx` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- 테이블의 AUTO_INCREMENT `visitors`

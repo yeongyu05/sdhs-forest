@@ -25,8 +25,8 @@
                         <button type="button" class="likeBtn">좋아요</button>
                     </div>
                     <?php endif;?>
-                    <div>좋아요 <?= $post->likedCnt?>개</div>
-                    <div>댓글 <?= $post->commentsCnt?>개</div>
+                    <div><?= $post->likedCnt?>개</div>
+                    <div><?= $post->commentsCnt?>개</div>
                     <div><?= $post->title?></div>
                     <div><?= $post->content?></div>
                     <div>

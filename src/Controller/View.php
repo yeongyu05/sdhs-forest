@@ -127,7 +127,8 @@ class View {
         $pidx = $url[1];
         $post = fetch("SELECT * FROM post WHERE pidx = ?", [$pidx]);
         $comments = fetchAll("SELECT * FROM `comments` WHERE pidx = ? ORDER BY groupNum, depth", [$pidx]);
-        $date = date('Y-m-d');
+        $timestamp = strtotime('2023-02-04');
+        $date = date('Y-m-d', $timestamp);
         $isVisited = fetch("SELECT * FROM `visitors` WHERE pidx = ? AND uidx = ? AND date = ?", [$pidx, ss()->uidx, $date]);
         !$isVisited && query("INSERT INTO `visitors`(`pidx`, `uidx`, `date`) VALUES (?,?,?)", [$pidx, ss()->uidx, $date]);
         view('detailPost', ['post' => $post, 'comments' => $comments]);
